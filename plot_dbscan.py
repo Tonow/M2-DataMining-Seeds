@@ -9,6 +9,9 @@ Finds core samples of high density and expands clusters from them.
 """
 print(__doc__)
 
+import time
+import progressbar
+
 import numpy as np
 import pandas as pd
 
@@ -60,48 +63,56 @@ X = col_utile
 
 # #############################################################################
 # Compute DBSCAN
+eps_max_value = 5
+eps_min_value = 0.1
+eps_step = 0.001
+min_samples_max_value = 12
+min_samples_min_value = 2
+
 def db_scan(X, labels_true):
     best_adjusted_rand_index = 0
     best_v_measure_score = 0
-    for eps in np.arange(0.1, 5, 0.001):
-        for min_samples in range(2, 12):
-            # print(f"esp: {eps}  |  min point {min_samples}")
-            # db = DBSCAN(eps=0.3, min_samples=10).fit(X)
-            db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
-            # import pdb; pdb.set_trace()
+    with progressbar.ProgressBar(max_value=eps_max_value) as bar:
+        for eps in np.arange(eps_min_value, eps_max_value, eps_step):
+            bar.update(eps)
+            for min_samples in range(min_samples_min_value, min_samples_max_value):
+                # print(f"esp: {eps}  |  min point {min_samples}")
+                # db = DBSCAN(eps=0.3, min_samples=10).fit(X)
+                db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
+                # import pdb; pdb.set_trace()
 
-            # labels = DBSCAN().fit_predict(X)
-            core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-            core_samples_mask[db.core_sample_indices_] = True
-            labels = db.labels_
+                # labels = DBSCAN().fit_predict(X)
+                core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+                core_samples_mask[db.core_sample_indices_] = True
+                labels = db.labels_
 
-            # Number of clusters in labels, ignoring noise if present.
-            n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+                # Number of clusters in labels, ignoring noise if present.
+                n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 
-            adjusted_rand_index = metrics.adjusted_rand_score(labels_true, labels)
-            v_measure_score = metrics.v_measure_score(labels_true, labels)
-            best_adjusted_index = adjusted_rand_index > best_adjusted_rand_index
-            best_v_measure = v_measure_score > best_v_measure_score
-            if best_adjusted_index and best_v_measure:
-                print("#"*30)
-                print(f"esp: {round(eps, 3)}  |  min point {min_samples}")
-                # print("Adjusted Rand Index: %0.3f"
-                #       % metrics.adjusted_rand_score(labels_true, labels))
-                print(f"Adjusted Rand Index: {round(adjusted_rand_index, 3)}")
-                print(f"V-measure: {round(v_measure_score, 3)}")
-                best_labels = labels
-                best_core_samples_mask = core_samples_mask
-                best_n_clusters_ = n_clusters_
-                best_adjusted_rand_index = adjusted_rand_index
-                best_v_measure_score = v_measure_score
-                best_eps = eps
-                best_min_samples = min_samples
+                adjusted_rand_index = metrics.adjusted_rand_score(labels_true, labels)
+                v_measure_score = metrics.v_measure_score(labels_true, labels)
+                best_adjusted_index = adjusted_rand_index > best_adjusted_rand_index
+                best_v_measure = v_measure_score > best_v_measure_score
+                if best_adjusted_index and best_v_measure:
+                    print("#"*30)
+                    print(f"esp: {round(eps, 3)}  |  min point {min_samples}")
+                    # print("Adjusted Rand Index: %0.3f"
+                    #       % metrics.adjusted_rand_score(labels_true, labels))
+                    print(f"Adjusted Rand Index: {round(adjusted_rand_index, 3)}")
+                    print(f"V-measure: {round(v_measure_score, 3)}")
+                    best_labels = labels
+                    best_core_samples_mask = core_samples_mask
+                    best_n_clusters_ = n_clusters_
+                    best_adjusted_rand_index = adjusted_rand_index
+                    best_v_measure_score = v_measure_score
+                    best_eps = eps
+                    best_min_samples = min_samples
 
-                homogeneity = metrics.homogeneity_score(labels_true, labels)
-                completeness = metrics.completeness_score(labels_true, labels)
+                    homogeneity = metrics.homogeneity_score(labels_true, labels)
+                    completeness = metrics.completeness_score(labels_true, labels)
 
-                adjusted_mutual_information = metrics.adjusted_mutual_info_score(labels_true, labels)
-                silhouette_coefficient = metrics.silhouette_score(X, labels)
+                    adjusted_mutual_information = metrics.adjusted_mutual_info_score(labels_true, labels)
+                    silhouette_coefficient = metrics.silhouette_score(X, labels)
 
     print("#"*50 +"\n")
     print("#"*15 + "  Rapport:  " + "#"*15 + "\n")
