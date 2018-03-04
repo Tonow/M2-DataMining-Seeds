@@ -63,11 +63,21 @@ X = col_utile
 
 # #############################################################################
 # Compute DBSCAN
+
 eps_max_value = 5
 eps_min_value = 0.1
 eps_step = 0.001
 min_samples_max_value = 12
 min_samples_min_value = 2
+
+changement_val_defaut = input(f'\n\n Valeur par defaut\n \n eps_max_value: {eps_max_value} \n eps_min_value: {eps_min_value} \n eps_step: {eps_step} \n min_samples_max_value: {min_samples_max_value} \n min_samples_min_value: {min_samples_min_value} \n Voulez vous changer ces valeur? y/n : ')
+if changement_val_defaut.lower() == 'y':
+    eps_max_value = float(input('votre eps_max_value ? : '))
+    eps_min_value = float(input('votre eps_min_value  ? : '))
+    eps_step = float(input('votre eps_step ? : '))
+    min_samples_max_value = int(input('votre min_samples_max_value ? : '))
+    min_samples_min_value = int(input('votre min_samples_min_value ? : '))
+
 
 def db_scan(X, labels_true):
     best_adjusted_rand_index = 0
