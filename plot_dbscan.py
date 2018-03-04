@@ -94,6 +94,8 @@ def db_scan(X, labels_true):
                 best_n_clusters_ = n_clusters_
                 best_adjusted_rand_index = adjusted_rand_index
                 best_v_measure_score = v_measure_score
+                best_eps = eps
+                best_min_samples = min_samples
 
                 homogeneity = metrics.homogeneity_score(labels_true, labels)
                 completeness = metrics.completeness_score(labels_true, labels)
@@ -104,6 +106,7 @@ def db_scan(X, labels_true):
     print("#"*50 +"\n")
     print("#"*15 + "  Rapport:  " + "#"*15 + "\n")
     print(f"Nombre de clusters estimer: {best_n_clusters_}")
+    print(f"esp: {round(best_eps, 3)}  |  min point {best_min_samples} \n")
     print(f"Homogeneity: {round(homogeneity, 3)}")
     print(f"Completeness: {round(completeness, 3)}")
     print(f"Adjusted Mutual Information: {round(adjusted_mutual_information, 3)}")
