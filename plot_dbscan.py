@@ -39,7 +39,7 @@ for col in dataframe.columns:
 
 
 df = pd.read_csv('seeds_dataset.csv')
-# col_utile = df.as_matrix(columns=['area', 'perimeter', 'length of kerne', 'length of kernel groove'])
+# col_utile = df.as_matrix(columns=['length of kernel groove', 'perimeter'])
 col_utile = df.as_matrix(columns=['perimeter', 'length of kerne', 'length of kernel groove'])
 
 
@@ -63,7 +63,7 @@ X = col_utile
 def db_scan(X, labels_true):
     best_adjusted_rand_index = 0
     best_v_measure_score = 0
-    for eps in np.arange(0.1, 4, 0.001):
+    for eps in np.arange(0.1, 5, 0.001):
         for min_samples in range(2, 12):
             # print(f"esp: {eps}  |  min point {min_samples}")
             # db = DBSCAN(eps=0.3, min_samples=10).fit(X)
@@ -145,12 +145,12 @@ for k, col in zip(unique_labels, colors):
 
     class_member_mask = (labels == k)
 
-# serie test
+# deux colonne
     # xy = X[class_member_mask & core_samples_mask]
-    # ax.scatter(xy[:, 0], xy[:, 1], c=tuple(col), marker='o')
+    # ax.scatter(xy[:, 0], xy[:, 1],  c=tuple(col), marker='o')
     #
     # xy = X[class_member_mask & ~core_samples_mask]
-    # ax.scatter(xy[:, 0], xy[:, 1], c=tuple(col), marker='+', s=40)
+    # ax.scatter(xy[:, 0], xy[:, 1],c=tuple(col), marker='+', s=180)
 
 # + area
     # xyz = X[class_member_mask & core_samples_mask]
@@ -160,7 +160,7 @@ for k, col in zip(unique_labels, colors):
     # ax.scatter(xyz[:, 1], xyz[:, 2], xyz[:, 3], c=tuple(col), marker='+', s=40)
 
 
-# trois colonne
+# # trois colonne
     xyz = X[class_member_mask & core_samples_mask]
     ax.scatter(xyz[:, 1], xyz[:, 2], xyz[:, 0], c=tuple(col), marker='o')
 
